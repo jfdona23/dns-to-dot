@@ -34,7 +34,7 @@ As an idea this could be used inside a Kubernetes cluster as a sidecar container
 ### Improvements
 * Make the proxy able to detect if the DNS query is genuine or not.
 * Make the proxy able to handle more than one request at the same time.
-* Make the proxy able to handle both protocols at the same time.
+* Make the proxy able to handle both protocols at the same time. (__Done!__)
 * With a better understanding of the DNS protocol, I think it's absolutely possible to write this proxy using only sockets (i.e no dns library).
 
 ### Usage
@@ -49,7 +49,9 @@ You can run the code and alter its behavior by passing a set of environmental va
 | BUFFER_SIZE  | 512        |
 | DNS_PROVIDER | cloudfare1 |
 
-Another providers could be _cloudfare2_, _google1_ and _google2_. Please see _dot_providers.py_.
+Notes:
+- Protocols could be _tcp_, _udp_ or _multi_ in order to enable tcp and udp at the same time.
+- Another providers could be _cloudfare2_, _google1_ and _google2_. Please see _dot_providers.py_.
 
 #### Local
 ```bash

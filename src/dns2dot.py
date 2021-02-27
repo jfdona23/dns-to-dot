@@ -6,6 +6,8 @@ import os
 import socket
 import sys
 
+from multiprocessing import Process
+
 import dns.message
 import dns.query
 
@@ -211,5 +213,17 @@ class DNSProxy:  # pylint: disable=too-many-instance-attributes
 
 
 if __name__ == "__main__":
-    app = DNSProxy()
-    app.run_proxy()
+
+    if os.environ.get("PROTO") == "multi":
+        app1 = DNSProxy(proto="udp")
+        f1 = app1.run_proxy
+        p1 = Process(target=f1)
+        p1.start()
+
+        app2 = DNSProxy(proto="tcp")
+        f2 = app2.run_proxy
+        p2 = Process(target=f2)
+        p2.start()
+    else:
+        app = DNSProxy()
+        app.run_proxy()
