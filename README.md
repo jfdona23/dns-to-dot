@@ -23,7 +23,8 @@ As an idea this could be used inside a Kubernetes cluster as a sidecar container
 ### Choices
 * __Socket__: Since I don't know how queries will be submitted I've opted for _socket_ library and test my code using _dig_.
 * __Dnspython__: Is a well known DNS toolkit and well documented.
-* __Logging__ as log library: Is more powerfull that a simple _print_ function and is easy to implement. Also I've more control on the messages shown.
+* __Logging__: Is more powerfull that a simple _print_ function and is easy to implement. Also I've more control on the messages shown.
+* __Multiprocessing__: Easy way to implement multiprocessing with python.
 * __Pydantic__: _(Discarded)_ I usually choose this one to map dictionary structures as objects and improve code readibility and type validation, but in this case the structure is quite simple and it only adds a lot of complexity into the main code.
 
 ### Security Concerns
@@ -40,25 +41,37 @@ As an idea this could be used inside a Kubernetes cluster as a sidecar container
 ### Usage
 You can run the code and alter its behavior by passing a set of environmental variables:
 
-| Variable     | Default    |
-|--------------|------------|
-| LOGLEVEL     | info       |
-| LISTEN_IP    | 0.0.0.0    |
-| LISTEN_PORT  | 53         |
-| PROTO        | udp        |
-| BUFFER_SIZE  | 512        |
-| DNS_PROVIDER | cloudfare1 |
+| Variable        | Default    |
+|-----------------|------------|
+| LOGLEVEL        | info       |
+| LISTEN_IP       | 0.0.0.0    |
+| LISTEN_PORT     | 53         |
+| PROTO           | udp        |
+| BUFFER_SIZE     | 512        |
+| DNS_PROVIDER    | cloudfare1 |
+| MULTIPROCESSING | True       |
 
 Notes:
-- Protocols could be _tcp_, _udp_ or _multi_ in order to enable tcp and udp at the same time.
-- Another providers could be _cloudfare2_, _google1_ and _google2_. Please see _dot_providers.py_.
+- Protocols could be _tcp_ or _udp_. When multiprocessing this has no effect.
+- Any value in Multiprocessing beyond "False", "No" or "0" (zero) will evaluate to True. (Case insensitive)
+- Other providers could be _cloudfare2_, _google1_ and _google2_. Please see _dot_providers.py_.
 
 #### Local
 ```bash
 cd src
 sudo python3 dns2dot.py
 # or passing variables
-sudo LOGLEVEL=debug python3 dns2dot.py
+sudo LOGLEVEL=debug MULTIPROCESSING=False python3 dns2dot.py                                                                                loki@wonderland
+2021-02-27T17:09:54-0300 - DEBUG : Protocol UDP selected, creating socket...
+2021-02-27T17:09:54-0300 - DEBUG : Listening on 127.0.0.1:53
+2021-02-27T17:09:54-0300 - DEBUG : Buffer Size is 512
+2021-02-27T17:09:54-0300 - DEBUG : DNS-over-TLS provider is cloudfare1
+2021-02-27T17:09:54-0300 - INFO : Initializing DNS to DoT proxy...
+
+2021-02-27T17:09:59-0300 - INFO : Received query from 127.0.0.1:58408
+2021-02-27T17:09:59-0300 - DEBUG : DNS Answer: [<DNS ole.com.ar. IN A RRset: [<104.18.170.219>, <104.18.169.219>]>]
+2021-02-27T17:09:59-0300 - DEBUG : Sending response back to 127.0.0.1:58408
+
 ```
 
 #### Docker
@@ -66,11 +79,28 @@ sudo LOGLEVEL=debug python3 dns2dot.py
 docker build -f Dockerfile -t <your_user>/<your_img_name> .
 docker run --rm -p 53:53/udp <your_user>/<your_img_name>
 # or passing variables
-docker run --rm -p 53:53/udp --env LOGLEVEL=debug --env PROTO=upd <your_user>/<your_img_name>
+docker run --rm -p 53:53/udp -p 53:53/tcp --env LOGLEVEL=debug --env MULTIPROCESSING=True <your_user>/<your_img_name>
+2021-02-27T20:18:12+0000 - DEBUG : Protocol UDP selected, creating socket...
+2021-02-27T20:18:12+0000 - DEBUG : Listening on 0.0.0.0:53
+2021-02-27T20:18:12+0000 - DEBUG : Buffer Size is 512
+2021-02-27T20:18:12+0000 - DEBUG : DNS-over-TLS provider is cloudfare1
+2021-02-27T20:18:12+0000 - DEBUG : Protocol TCP selected, creating socket...
+2021-02-27T20:18:12+0000 - DEBUG : Listening on 0.0.0.0:53
+2021-02-27T20:18:12+0000 - DEBUG : Buffer Size is 512
+2021-02-27T20:18:12+0000 - DEBUG : DNS-over-TLS provider is cloudfare1
+2021-02-27T20:18:12+0000 - INFO : Initializing DNS to DoT proxy...
+2021-02-27T20:18:12+0000 - INFO : Initializing DNS to DoT proxy...
+
+2021-02-27T20:18:15+0000 - INFO : Received query from 172.17.0.1:38324
+2021-02-27T20:18:15+0000 - DEBUG : DNS Answer: [<DNS ole.com.ar. IN A RRset: [<104.18.169.219>, <104.18.170.219>]>]
+2021-02-27T20:18:15+0000 - DEBUG : Sending response back to 172.17.0.1:38324
+2021-02-27T20:18:17+0000 - INFO : Received query from 172.17.0.1:33882
+2021-02-27T20:18:17+0000 - DEBUG : DNS Answer: [<DNS ole.com.ar. IN A RRset: [<104.18.170.219>, <104.18.169.219>]>]
+2021-02-27T20:18:17+0000 - DEBUG : Sending response back to 172.17.0.1:33882
 ```
 If you prefer run it from my repo:
 ```bash
 docker run --rm -p 53:53/udp jfdona23/dns2dot
 # or passing variables
-docker run --rm -p 53:53/udp --env LOGLEVEL=debug --env PROTO=upd jfdona23/dns2dot
+docker run --rm -p 53:53/udp --env LOGLEVEL=debug --env MULTIPROCESSING=False --env PROTO=udp jfdona23/dns2dot
 ```

@@ -211,10 +211,13 @@ class DNSProxy:  # pylint: disable=too-many-instance-attributes
         logger.debug("DNS Answer: %s", dns_tls_query.answer)
         return dns_tls_query
 
+# ----------------------------------------------------------------------------------------------- #
+# Helper Functions
+# ----------------------------------------------------------------------------------------------- #
+def start(multiprocessing=True):
+    """ Multiprocessing start function """
 
-if __name__ == "__main__":
-
-    if os.environ.get("PROTO") == "multi":
+    if multiprocessing:
         app1 = DNSProxy(proto="udp")
         f1 = app1.run_proxy
         p1 = Process(target=f1)
@@ -227,3 +230,12 @@ if __name__ == "__main__":
     else:
         app = DNSProxy()
         app.run_proxy()
+
+# ----------------------------------------------------------------------------------------------- #
+# Entrypoint
+# ----------------------------------------------------------------------------------------------- #
+if __name__ == "__main__":
+    multiprocessing = os.environ.get("MULTIPROCESSING", "True")
+    if multiprocessing.lower() in ["false", "no", "0"]:
+        multiprocessing = False
+    start(multiprocessing=multiprocessing)
