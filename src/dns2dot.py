@@ -30,7 +30,7 @@ logger.setLevel(LOGLEVEL)
 # ----------------------------------------------------------------------------------------------- #
 # Main Code
 # ----------------------------------------------------------------------------------------------- #
-class DNSProxy():
+class DNSProxy:  # pylint: disable=too-many-instance-attributes
     """ DNSProxy """
 
     def __init__(
@@ -40,7 +40,7 @@ class DNSProxy():
         buffer_size=os.environ.get("BUFFER_SIZE", 512),
         dns_tls_provider=os.environ.get("DNS_PROVIDER", "cloudfare1"),
         proto=os.environ.get("PROTO", "udp"),
-    ):
+    ):  # pylint: disable=too-many-arguments
         """Init the class
 
         Args:
@@ -70,9 +70,6 @@ class DNSProxy():
         else:
             logger.critical("Protocol %s is unknown. Please use UDP or TCP", self.proto)
             sys.exit(1)
-            # logger.debug("Protocol TCP & UDP selected, creating sockets...")
-            # self.socket_tcp_init()
-            # self.socket_udp_init()
 
     def socket_tcp_init(self):
         """Create the socket using TCP"""
@@ -214,12 +211,5 @@ class DNSProxy():
 
 
 if __name__ == "__main__":
-    # app1 = DNSProxy(proto="tcp")
-    # app2 = DNSProxy(proto="udp")
-    # app1.start()
-    # app2.start()
-    # app1.run_proxy()
-    # app2.run_proxy()
-
     app = DNSProxy()
     app.run_proxy()

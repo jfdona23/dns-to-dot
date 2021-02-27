@@ -1,3 +1,6 @@
+"""
+Information about the DNS-over-TLS provider to be used.
+"""
 # from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 
 # dot_providers_dict = {
