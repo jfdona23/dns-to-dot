@@ -73,6 +73,19 @@ sudo LOGLEVEL=debug MULTIPROCESSING=False python3 dns2dot.py                    
 2021-02-27T17:09:59-0300 - DEBUG : Sending response back to 127.0.0.1:58408
 
 ```
+Or importing it into your existing code:
+```python
+# Example with multiprocessing support
+from dns2dot import start_proxy
+start_proxy()
+```
+```python
+# Example without multiprocessing support
+from dns2dot import DNSProxy
+my_proxy = DNSProxy()
+my_proxy.run_proxy()
+```
+Remember you can configure certain parameters by sending environmental variables or by the constructor method from the DNSProxy class.
 
 #### Docker
 ```bash
