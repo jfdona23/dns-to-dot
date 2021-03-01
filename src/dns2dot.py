@@ -214,7 +214,7 @@ class DNSProxy:  # pylint: disable=too-many-instance-attributes
 # ----------------------------------------------------------------------------------------------- #
 # Helper Functions
 # ----------------------------------------------------------------------------------------------- #
-def start(multiprocessing=True):
+def start_proxy(multiprocessing=True):
     """ Multiprocessing start function """
 
     if multiprocessing:
@@ -238,4 +238,4 @@ if __name__ == "__main__":
     multiprocessing = os.environ.get("MULTIPROCESSING", "True")
     if multiprocessing.lower() in ["false", "no", "0"]:
         multiprocessing = False
-    start(multiprocessing=multiprocessing)
+    start_proxy(multiprocessing=multiprocessing)
