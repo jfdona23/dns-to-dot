@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """
 Translates DNS queries into DNS-over-TLS queries
 """
@@ -235,7 +236,7 @@ def start_proxy(multiprocessing=True):
 # Entrypoint
 # ----------------------------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    multiprocessing = os.environ.get("MULTIPROCESSING", "True")
-    if multiprocessing.lower() in ["false", "no", "0"]:
-        multiprocessing = False
-    start_proxy(multiprocessing=multiprocessing)
+    mp = os.environ.get("MULTIPROCESSING", "True")
+    if mp.lower() in ["false", "no", "0"]:
+        mp = False
+    start_proxy(multiprocessing=mp)
