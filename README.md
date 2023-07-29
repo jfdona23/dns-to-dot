@@ -25,17 +25,17 @@ As an idea this could be used inside a Kubernetes cluster as a sidecar container
 * __Dnspython__: Is a well known DNS toolkit and well documented.
 * __Logging__: Is more powerfull that a simple _print_ function and is easy to implement. Also I've more control on the messages shown.
 * __Multiprocessing__: Easy way to implement multiprocessing with python.
-* __Pydantic__: _(Discarded)_ I usually choose this one to map dictionary structures as objects and improve code readibility and type validation, but in this case the structure is quite simple and it only adds a lot of complexity into the main code.
+* ~~__Pydantic__: I usually choose this one to map dictionary structures as objects and improve code readibility and type validation, but in this case the structure is quite simple and it only adds a lot of complexity into the main code.~~
 
 ### Security Concerns
 * Despite the final query is made over TLS, there is a chance to get a DNS poisoning attack between the client and the DNS proxy itself. A proper solution to avoid this could be the client performing the DNS-over-TLS query itself.
 * Any data sent through UDP/53 to the proxy could make it crash since it doesn't perform any kind of DNS query validation. (tested with netcat)
-* If someone with bad intentions gets access to the code, he/she could edit response parameters before reaching the client. An example of that is the query ID inside the header which I manipulate in order to not being detected as an attacker.
+* If someone with bad intentions gets access to the code, they could edit response parameters before reaching the client. An example of that is the query ID inside the header which I manipulate in order to not being detected as an attacker.
 
 ### Improvements
 * Make the proxy able to detect if the DNS query is genuine or not.
 * Make the proxy able to handle more than one request at the same time.
-* Make the proxy able to handle both protocols at the same time. (__Done!__)
+* ~~Make the proxy able to handle both protocols at the same time.~~ (__Done!__)
 * With a better understanding of the DNS protocol, I think it's absolutely possible to write this proxy using only sockets (i.e no dns library).
 
 ### Usage
